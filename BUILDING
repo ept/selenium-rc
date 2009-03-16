@@ -1,0 +1,15 @@
+Make sure there is a checkout of the selenium-core repository in
+`../selenium-core` (relative to the directory containing this file).
+
+Run `mvn install` in `../selenium-core`.
+
+Return to this directory and run:
+
+    mvn install -DskipTests -Pcore
+
+If this is the first time building, Maven may need to update its plugins.
+Add the `-U` option in that case.
+
+`-DskipTests` is given because running the tests requires various browsers
+to be set up correctly, which may not be the case on a development machine.
+
