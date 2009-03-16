@@ -13,3 +13,5 @@ Add the `-U` option in that case.
 `-DskipTests` is given because running the tests requires various browsers
 to be set up correctly, which may not be the case on a development machine.
 
+For more information, see
+http://wiki.openqa.org/display/SRC/Developer%27s+Guide
