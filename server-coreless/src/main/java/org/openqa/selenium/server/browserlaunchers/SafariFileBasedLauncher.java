@@ -54,7 +54,7 @@ public class SafariFileBasedLauncher extends SafariCustomProfileLauncher {
                 userExtensionsJavascriptFile = new File(coreDir, "scripts/user-extensions.js");
                 FileUtils.getFileUtils().copyFile(userExtensions, userExtensionsJavascriptFile, null, true);
             }
-            return new File(coreDir, "RemoteRunner.html");
+            return new File(coreDir, "GoTestIt.html");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

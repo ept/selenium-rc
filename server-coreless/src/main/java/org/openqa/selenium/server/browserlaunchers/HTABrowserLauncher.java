@@ -84,8 +84,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
             coreDir.mkdirs();
             ResourceExtractor.extractResourcePath(HTABrowserLauncher.class, "/core", coreDir);
             FileUtils f = FileUtils.getFileUtils();
-            File selRunnerSrc = new File(coreDir, "RemoteRunner.html");
-            File selRunnerDest = new File(coreDir, "RemoteRunner.hta");
+            File selRunnerSrc = new File(coreDir, "GoTestIt.html");
+            File selRunnerDest = new File(coreDir, "GoTestIt.hta");
             File testRunnerSrc = new File(coreDir, "TestRunner.html");
             File testRunnerDest = new File(coreDir, "TestRunner.hta");
             // custom user-extensions
@@ -137,7 +137,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
      * Note that the browserConfigurationOptions object is ignored; This browser configuration is not supported for IE
      */
     public void launchRemoteSession(String url) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, (!browserOptions.isSingleWindow()), getPort(), browserOptions.is("browserSideLog")), "RemoteRunner.hta");
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, (!browserOptions.isSingleWindow()), getPort(), browserOptions.is("browserSideLog")), "GoTestIt.hta");
     }
 
 }

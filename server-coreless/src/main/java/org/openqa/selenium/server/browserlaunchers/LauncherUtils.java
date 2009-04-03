@@ -196,7 +196,7 @@ public class LauncherUtils {
 
 	protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow, int serverPort, boolean browserSideLog) {
 		String url = LauncherUtils.stripStartURL(startURL);
-		url += "/selenium-server/core/RemoteRunner.html?" 
+		url += "/selenium-server/core/GoTestIt.html?" 
                 + "sessionId=" + sessionId 
                 + "&multiWindow=" + multiWindow 
                 + "&baseUrl=" + urlEncode(startURL)

@@ -149,6 +149,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         LauncherUtils.extractHTAFile(htmlDir, getPort(), "/core/TestRunner.html", "TestRunner.html");
         LauncherUtils.extractHTAFile(htmlDir, getPort(), "/core/TestPrompt.html", "TestPrompt.html");
         LauncherUtils.extractHTAFile(htmlDir, getPort(), "/core/RemoteRunner.html", "RemoteRunner.html");
+        LauncherUtils.extractHTAFile(htmlDir, getPort(), "/core/GoTestIt.html", "GoTestIt.html");
 
     }
 
