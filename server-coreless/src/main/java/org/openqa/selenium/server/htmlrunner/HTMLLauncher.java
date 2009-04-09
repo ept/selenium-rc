@@ -51,13 +51,13 @@ public class HTMLLauncher implements HTMLResultsListener {
      * @param suiteURL - the relative URL to the HTML suite
      * @param outputFile - The file to which we'll output the HTML results
      * @param timeoutInSeconds - the amount of time (in seconds) to wait for the browser to finish
-     * @param multiWindow TODO
+     * @param multiWindow - whether to open the application under test in a separate window
      * @return PASS or FAIL
      * @throws IOException if we can't write the output file
      */
     public String runHTMLSuite(String browser, String browserURL, String suiteURL, File outputFile, int timeoutInSeconds, boolean multiWindow) throws IOException {
         return runHTMLSuite(browser, browserURL, suiteURL, outputFile,
-                timeoutInSeconds, multiWindow, "info");
+                timeoutInSeconds, multiWindow, false, "info");
     }
 
     /** Launches a single HTML Selenium test suite.
@@ -66,13 +66,14 @@ public class HTMLLauncher implements HTMLResultsListener {
      * @param browserURL - the start URL for the browser
      * @param suiteURL - the relative URL to the HTML suite
      * @param outputFile - The file to which we'll output the HTML results
-     * @param multiWindow TODO
+     * @param multiWindow - whether to open the application under test in a separate window
+     * @param maximizedWindow - whether to maximize the window with the application under test
      * @param defaultLogLevel TODO
      * @param timeoutInSeconds - the amount of time (in seconds) to wait for the browser to finish
      * @return PASS or FAIL
      * @throws IOException if we can't write the output file
      */
-    private String runHTMLSuite(String browser, String browserURL, String suiteURL, File outputFile, int timeoutInSeconds, boolean multiWindow, String defaultLogLevel) throws IOException {
+    private String runHTMLSuite(String browser, String browserURL, String suiteURL, File outputFile, int timeoutInSeconds, boolean multiWindow, boolean maximizedWindow, String defaultLogLevel) throws IOException {
         outputFile.createNewFile();
         if (!outputFile.canWrite()) {
         	throw new IOException("Can't write to outputFile: " + outputFile.getAbsolutePath());
@@ -87,6 +88,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
         BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
         browserOptions.setSingleWindow(!multiWindow);
+        browserOptions.setMaximizedWindow(maximizedWindow);
         BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, remoteControl.getConfiguration(), browserOptions);
         BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId, 
             browser, browserURL, launcher, null);
@@ -125,6 +127,22 @@ public class HTMLLauncher implements HTMLResultsListener {
      * @throws IOException if we can't write the output file
      */
     public String runHTMLSuite(String browser, String browserURL, File suiteFile, File outputFile, int timeoutInSeconds, boolean multiWindow) throws IOException {
+        return runHTMLSuite(browser, browserURL, suiteFile, outputFile, timeoutInSeconds, multiWindow, false);
+    }
+    
+    /** Launches a single HTML Selenium test suite.
+     * 
+     * @param browser - the browserString ("*firefox", "*iexplore" or an executable path)
+     * @param browserURL - the start URL for the browser
+     * @param suiteFile - a file containing the HTML suite to run
+     * @param outputFile - The file to which we'll output the HTML results
+     * @param timeoutInSeconds - the amount of time (in seconds) to wait for the browser to finish
+     * @param multiWindow - whether to run the browser in multiWindow or else framed mode
+     * @param maximizedWindow - in multiWindow mode, whether to maximize the window
+     * @return PASSED or FAIL
+     * @throws IOException if we can't write the output file
+     */
+    public String runHTMLSuite(String browser, String browserURL, File suiteFile, File outputFile, int timeoutInSeconds, boolean multiWindow, boolean maximizedWindow) throws IOException {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
         if (!suiteFile.exists()) {
     		throw new IOException("Can't find HTML Suite file:" + suiteFile.getAbsolutePath());
@@ -141,7 +159,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         } else {
             suiteURL = LauncherUtils.stripStartURL(browserURL) + "/selenium-server/tests/" + suiteFile.getName();
         }
-    	return runHTMLSuite(browser, browserURL, suiteURL, outputFile, timeoutInSeconds, multiWindow, "info");
+    	return runHTMLSuite(browser, browserURL, suiteURL, outputFile, timeoutInSeconds, multiWindow, maximizedWindow, "info");
     }
     
     
@@ -215,7 +233,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         String result = null;
         int timeoutInSeconds = remoteControl.getConfiguration().getTimeoutInSeconds();
         try {
-            result = runHTMLSuite("*"+browser, baseUrl, suiteUrl, resultsFile, timeoutInSeconds, multiWindow, "info");
+            result = runHTMLSuite("*"+browser, baseUrl, suiteUrl, resultsFile, timeoutInSeconds, multiWindow, false, "info");
             if ("PASSED".equals(result)) {
                 log.info(result + ' ' + resultsFile.getAbsolutePath());
             } else {

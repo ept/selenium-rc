@@ -178,7 +178,7 @@ public class LauncherUtils {
 		}
 	}
 
-	protected static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl, boolean multiWindow, int serverPort) {
+	protected static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl, boolean multiWindow, boolean maximizedWindow, int serverPort) {
 		String url = LauncherUtils.stripStartURL(browserURL);
         String resultsUrl;
         if (serverPort == 0) {
@@ -188,17 +188,19 @@ public class LauncherUtils {
         }
 		return url + "/selenium-server/core/TestRunner.html?auto=true"
                 + "&multiWindow=" + multiWindow
+                + "&maximizedWindow=" + maximizedWindow
                 + "&defaultLogLevel=info"
                 + "&baseUrl=" + urlEncode(browserURL)
                 + "&resultsUrl=" + resultsUrl
                 + "&test=" + urlEncode(suiteUrl);
 	}
 
-	protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow, int serverPort, boolean browserSideLog) {
+	protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow, boolean maximizedWindow, int serverPort, boolean browserSideLog) {
 		String url = LauncherUtils.stripStartURL(startURL);
 		url += "/selenium-server/core/GoTestIt.html?" 
                 + "sessionId=" + sessionId 
-                + "&multiWindow=" + multiWindow 
+                + "&multiWindow=" + multiWindow
+                + "&maximizedWindow=" + maximizedWindow
                 + "&baseUrl=" + urlEncode(startURL)
                 + "&debugMode=" + browserSideLog;
         if (serverPort != 0) {

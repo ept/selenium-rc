@@ -126,7 +126,9 @@ public class HTABrowserLauncher implements BrowserLauncher {
     }
 
     public void launchHTMLSuite(String suiteUrl, String browserURL) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, (!browserOptions.isSingleWindow()), getPort()), "TestRunner.hta");
+        boolean multiWindow = !browserOptions.isSingleWindow();
+        boolean maximizedWindow = browserOptions.isMaximizedWindow();
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, maximizedWindow, getPort()), "TestRunner.hta");
     }
 
     private int getPort() {
@@ -137,7 +139,10 @@ public class HTABrowserLauncher implements BrowserLauncher {
      * Note that the browserConfigurationOptions object is ignored; This browser configuration is not supported for IE
      */
     public void launchRemoteSession(String url) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, (!browserOptions.isSingleWindow()), getPort(), browserOptions.is("browserSideLog")), "GoTestIt.hta");
+        boolean multiWindow = !browserOptions.isSingleWindow();
+        boolean maximizedWindow = browserOptions.isMaximizedWindow();
+        boolean browserSideLog = browserOptions.is("browserSideLog");
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, multiWindow, maximizedWindow, getPort(), browserSideLog), "GoTestIt.hta");
     }
 
 }

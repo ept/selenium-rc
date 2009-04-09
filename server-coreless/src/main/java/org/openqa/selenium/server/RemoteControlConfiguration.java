@@ -57,6 +57,7 @@ public class RemoteControlConfiguration {
     private int jettyThreads = SeleniumServer.DEFAULT_JETTY_THREADS;
     private SeleniumServer server;
     private boolean singleWindow;
+    private boolean maximizedWindow;
     
 
     public RemoteControlConfiguration() {
@@ -87,6 +88,14 @@ public class RemoteControlConfiguration {
     
     public void setSingleWindow(boolean useSingleWindow) {
         singleWindow = useSingleWindow;
+    }
+    
+    public boolean isMaximizedWindow() {
+        return maximizedWindow;
+    }
+    
+    public void setMaximizedWindow(boolean useMaximizedWindow) {
+        maximizedWindow = useMaximizedWindow;
     }
     
     public File getProfilesLocation() {
@@ -355,6 +364,7 @@ public class RemoteControlConfiguration {
         browserOptions.set("userExtensions", userExtensions);
         browserOptions.set("proxyInjectionMode", proxyInjectionModeArg);
         browserOptions.set("singleWindow", singleWindow);
+        browserOptions.set("maximizedWindow", maximizedWindow);
         browserOptions.set("ensureCleanSession", ensureCleanSession);
         browserOptions.set("avoidProxy", avoidProxy);
         browserOptions.set("browserSideLog", browserSideLogEnabled);

@@ -57,6 +57,15 @@ public class BrowserConfigurationOptions {
         hasOptions = true;
     }
     
+    public boolean isMaximizedWindow() {
+        return is("maximizedWindow");
+    }
+    
+    public void setMaximizedWindow(Boolean maximizedWindow) {
+        options.put("maximizedWindow", maximizedWindow.toString());
+        hasOptions = true;
+    }
+    
     public String getExecutablePath() {
         return options.get("executablePath");
     }

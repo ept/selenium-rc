@@ -32,6 +32,18 @@ public class RemoteControlConfigurationUnitTest extends TestCase {
         configuration.setSingleWindow(!true);
         assertTrue((!configuration.isSingleWindow()));
     }
+    
+    public void testMaximizedWindowIsFalseByDefault() {
+        assertTrue(!(new RemoteControlConfiguration()).isMaximizedWindow());
+    }
+    
+    public void testMaximizedWindowCanBeSet() {
+        final RemoteControlConfiguration configuration;
+        configuration = new RemoteControlConfiguration();
+
+        configuration.setMaximizedWindow(true);
+        assertTrue(configuration.isMaximizedWindow());
+    }
 
     public void testProxyInjectionModeArgIsFalseByDefault() {
         assertFalse(new RemoteControlConfiguration().getProxyInjectionModeArg());

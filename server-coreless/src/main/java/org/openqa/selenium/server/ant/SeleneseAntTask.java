@@ -92,6 +92,11 @@ import org.openqa.selenium.server.htmlrunner.*;
  *     <td align="center" valign="top">No, defaults to false</td>
  *   </tr>
  *   <tr>
+ *     <td valign="top">maximizedWindow</td>
+ *     <td valign="top">true if the window running the application should be maximized, false if it should be displayed side-by-side with the test window</td>
+ *     <td align="center" valign="top">No, defaults to false, ignored if multiWindow=false</td>
+ *   </tr>
+ *   <tr>
  *     <td valign="top">slowResources</td>
  *     <td valign="top">A debugging tool that slows down the Selenium Server.  (Selenium developers only)</td>
  *     <td align="center" valign="top">No, defaults to false</td>
@@ -107,7 +112,7 @@ public class SeleneseAntTask extends Task {
 	private static final String SELENIUM_JAVASCRIPT_DIR = "selenium.javascript.dir";
 	private int port = RemoteControlConfiguration.DEFAULT_PORT;
 	private int timeoutInSeconds = RemoteControlConfiguration.DEFAULT_TIMEOUT_IN_SECONDS;
-	private boolean slowResources, multiWindow;
+	private boolean slowResources, multiWindow, maximizedWindow;
 	private String browser, startURL;
 	private File suite, results, outputDir;
 	private boolean haltOnFailure=true;
@@ -129,7 +134,7 @@ public class SeleneseAntTask extends Task {
 			server = new SeleniumServer(slowResources, new RemoteControlConfiguration());
 			server.start();
 			HTMLLauncher launcher = new HTMLLauncher(server);
-			String result = launcher.runHTMLSuite(browser, startURL, suite, results, timeoutInSeconds, multiWindow);
+			String result = launcher.runHTMLSuite(browser, startURL, suite, results, timeoutInSeconds, multiWindow, maximizedWindow);
 			server.stop();
 			if (!"PASSED".equals(result)) {
 				
@@ -177,7 +182,9 @@ public class SeleneseAntTask extends Task {
 		    outputDir = getProject().getBaseDir();
 		}
 		if (results == null) {
-			String options = (multiWindow ? "multiWindow-" : "") + (slowResources ? "slowResources-" : "");
+			String options = (multiWindow ? "multiWindow-" : "") +
+			    (maximizedWindow ? "maximizedWindow-" : "") +
+			    (slowResources ? "slowResources-" : "");
 			String name = "results-" + extractUsableBrowserName() + '-' + options + suite.getName();
 			setResults(new File(name));
 		}
@@ -197,6 +204,10 @@ public class SeleneseAntTask extends Task {
 
 	public void setMultiWindow(boolean multiWindow) {
 		this.multiWindow = multiWindow;
+	}
+	
+	public void setMaximizedWindow(boolean maximizedWindow) {
+	    this.maximizedWindow = maximizedWindow;
 	}
 
 	public void setPort(int port) {

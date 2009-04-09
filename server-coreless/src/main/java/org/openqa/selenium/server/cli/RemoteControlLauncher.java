@@ -22,6 +22,7 @@ public class RemoteControlLauncher {
         printWrappedErrorLine(INDENT, "-timeout <nnnn>: an integer number of seconds before we should give up");
         printWrappedErrorLine(INDENT, "-interactive: puts you into interactive mode.  See the tutorial for more details");
         printWrappedErrorLine(INDENT, "-singleWindow: puts you into a mode where the test web site executes in a frame. This mode should only be selected if the application under test does not use frames.");
+        printWrappedErrorLine(INDENT, "-maximizedWindow: Make the browser window showing the website maximized. Default is to show the website and the test window side-by-side. Ignored in -singleWindow mode.");
         printWrappedErrorLine(INDENT, "-profilesLocation: Specifies the directory that holds the profiles that java clients can use to start up selenium.  Currently supported for Firefox only.");
         printWrappedErrorLine(INDENT, "-forcedBrowserMode <browser>: sets the browser mode to a single argument (e.g. \"*iexplore\") for all sessions, no matter what is passed to getNewBrowserSession");
 
@@ -81,6 +82,10 @@ public class RemoteControlLauncher {
                 configuration.setSingleWindow(!true);
             } else if ("-singleWindow".equalsIgnoreCase(arg)) {
                 configuration.setSingleWindow(!false);
+            } else if ("-tiledWindow".equalsIgnoreCase(arg)) {
+                configuration.setMaximizedWindow(false);
+            } else if ("-maximizedWindow".equalsIgnoreCase(arg)) {
+                configuration.setMaximizedWindow(true);
             } else if ("-profilesLocation".equalsIgnoreCase(arg)) {
                 File profilesLocation = new File(getArg(args, ++i));
                 if (!profilesLocation.exists()) {

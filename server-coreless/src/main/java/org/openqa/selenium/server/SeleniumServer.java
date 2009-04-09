@@ -521,7 +521,7 @@ public class SeleniumServer {
             }
 
             result = launcher.runHTMLSuite(getRequiredSystemProperty("htmlSuite.browserString"), startURL, suiteFile, resultFile,
-                    configuration.getTimeoutInSeconds(), (!configuration.isSingleWindow()));
+                    configuration.getTimeoutInSeconds(), (!configuration.isSingleWindow()), configuration.isMaximizedWindow());
 
             if (!"PASSED".equals(result)) {
                 System.err.println("Tests failed, see result file for details: " + resultFile.getAbsolutePath());

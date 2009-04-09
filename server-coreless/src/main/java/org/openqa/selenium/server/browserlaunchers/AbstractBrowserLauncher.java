@@ -23,15 +23,19 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
     }
 
     public void launchHTMLSuite(String suiteUrl, String browserURL) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, (!browserConfigurationOptions.isSingleWindow()), 0));
+        boolean multiWindow = !browserConfigurationOptions.isSingleWindow();
+        boolean maximizedWindow = browserConfigurationOptions.isMaximizedWindow();
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, maximizedWindow, 0));
     }
 
     public void launchRemoteSession(String browserURL) {
+        boolean multiWindow = !browserConfigurationOptions.isSingleWindow();
+        boolean maximizedWindow = browserConfigurationOptions.isMaximizedWindow();
         boolean browserSideLog = browserConfigurationOptions.is("browserSideLog");
         if (browserSideLog) {
             configuration.getSeleniumServer().generateSSLCertsForLoggingHosts();
         }
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, (!browserConfigurationOptions.isSingleWindow()), 0, browserSideLog));
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, maximizedWindow, 0, browserSideLog));
     }
 
     protected abstract void launch(String url);
