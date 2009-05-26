@@ -57,8 +57,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         super(sessionId, configuration, browserOptions);
 
         if (browserInstallation == null) {
-        	LOGGER.warn("The specified path to the browser executable is invalid.");
-        	return;
+        	throw new InvalidBrowserExecutableException("The specified path to the browser executable is invalid.");
         }
         this.browserInstallation = browserInstallation;
 
@@ -106,18 +105,27 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         shell.execute();
         waitForFullProfileToBeCreated(20 * 1000);
     }
-
-    private String makeCustomProfile(String homePage) throws IOException {
-        customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
-
-        String sourceLocationName = "/customProfileDirCUSTFFCHROME";
-
+    
+    protected void createCustomProfileDir() {
+    	customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
+    }
+    
+    protected void copyDirectory(File sourceDir, File destDir) {
+    	 LauncherUtils.copyDirectory(sourceDir, destDir);
+    }
+    
+    protected File initProfileTemplate() {
         File firefoxProfileTemplate = null;
+        
         String relativeProfile = browserConfigurationOptions.getProfile();
-        if (relativeProfile == null) relativeProfile = "";
-        if (!"".equals(getConfiguration().getProfilesLocation()) && !"".equals(relativeProfile)) {
-            File profileDirectory = getConfiguration().getProfilesLocation();
-            firefoxProfileTemplate = new File(profileDirectory + "/" + relativeProfile);
+        if (relativeProfile == null) {
+        	relativeProfile = "";
+        }
+        
+        File profilesLocation = getConfiguration().getProfilesLocation();
+        if (profilesLocation != null && !"".equals(relativeProfile)) {
+
+            firefoxProfileTemplate = getFileFromParent(profilesLocation, relativeProfile);
             if (!firefoxProfileTemplate.exists()) {
                 throw new RuntimeException("The profile specified '" + firefoxProfileTemplate.getAbsolutePath() + "' does not exist");
             }
@@ -126,15 +134,59 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         }
         
         if (firefoxProfileTemplate != null) {
-            LauncherUtils.copyDirectory(firefoxProfileTemplate, customProfileDir);
+        	copyDirectory(firefoxProfileTemplate, customProfileDir);
         }
-        ResourceExtractor.extractResourcePath(getClass(), sourceLocationName, customProfileDir);
+        
+        return firefoxProfileTemplate;
+    }
+    
+    protected void extractProfileFromJar() throws IOException {
+    	ResourceExtractor.extractResourcePath(getClass(), "/customProfileDirCUSTFFCHROME", customProfileDir);
+    }
+    
+    protected void copySingleFileWithOverwrite(File sourceFile, File destFile) {
+    	LauncherUtils.copySingleFileWithOverwrite(sourceFile, destFile, true);
+    }
+    
+    protected File getFileFromParent(final File parent, String child) {
+    	return new File(parent, child);
+    }
+    
+    protected void copyCert8db(final File firefoxProfileTemplate) {
+        // Make sure that cert8.db of firefoxProfileTemplate is stored into customProfileDir 
+        if (firefoxProfileTemplate != null) {
+        	File sourceCertFile = getFileFromParent(firefoxProfileTemplate, "cert8.db");
+        	if (sourceCertFile.exists()) {
+	        	File destCertFile = new File(customProfileDir, "cert8.db");
+	        	copySingleFileWithOverwrite(sourceCertFile, destCertFile);
+        	}
+        }
+    }
+    
+    protected void generatePacAndPrefJs(String homePage) throws IOException {
+        LauncherUtils.ProxySetting proxySetting = LauncherUtils.ProxySetting.NO_PROXY;
+        if (browserConfigurationOptions.is("captureNetworkTraffic")) {
+            proxySetting = LauncherUtils.ProxySetting.PROXY_EVERYTHING;
+        }
+
+        LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), proxySetting, homePage, changeMaxConnections, browserConfigurationOptions.getTimeoutInSeconds(), browserConfigurationOptions.is("avoidProxy"));
+    }
+    
+    private String makeCustomProfile(String homePage) throws IOException {
+    	
+    	createCustomProfileDir();
+
+        File firefoxProfileTemplate = initProfileTemplate();
+                
+        extractProfileFromJar();
+
+        copyCert8db(firefoxProfileTemplate);
 
         copyRunnerHtmlFiles();
         
         changeMaxConnections = browserConfigurationOptions.is("changeMaxConnections");
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), LauncherUtils.ProxySetting.NO_PROXY, homePage, changeMaxConnections, browserConfigurationOptions.getTimeoutInSeconds(), browserConfigurationOptions.is("avoidProxy"));
+        generatePacAndPrefJs(homePage);
 
         return customProfileDir.getAbsolutePath();
     }

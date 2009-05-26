@@ -280,13 +280,19 @@ public class LauncherUtils {
     }
 
     protected static void copySingleFile(File sourceFile, File destFile) {
+        copySingleFileWithOverwrite(sourceFile, destFile, false);
+    }
+
+    protected static void copySingleFileWithOverwrite(File sourceFile, File destFile, boolean overwrite) {
         Project p = new Project();
         Copy c = new Copy();
         c.setProject(p);
         c.setTofile(destFile);
         FileSet fs = new FileSet();
+        fs.setProject(p);
         fs.setFile(sourceFile);
         c.addFileset(fs);
+        c.setOverwrite(overwrite);
         c.execute();
     }
     

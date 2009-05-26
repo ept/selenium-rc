@@ -10,7 +10,7 @@ public class BrowserConfigurationOptions {
     private boolean hasOptions = false;
     
     public BrowserConfigurationOptions(String browserConfiguration) {
-        //"name:value;name:value"
+        //"name=value;name=value"
         String[] optionsPairList = browserConfiguration.split(";");
         for (int i = 0; i < optionsPairList.length; i++) {
             String[] option = optionsPairList[i].split("=", 2);
@@ -103,6 +103,11 @@ public class BrowserConfigurationOptions {
         } else {
             options.put(key, value.toString());
         }
+    }
+    
+    public void setSafely(String key, Object value) {
+        if (value == null) return;
+        set(key, value);
     }
     
     /**
