@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="src" path="/selenium-core"/>
 	<classpathentry exported="true" kind="src" path="/selenium-server-coreless"/>
 	<classpathentry kind="var" path="M2_REPO/ant/ant/1.6.5/ant-1.6.5.jar" sourcepath="M2_REPO/ant/ant/1.6.5/ant-1.6.5-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/jetty/org.mortbay.jetty/5.1.10/org.mortbay.jetty-5.1.10.jar"/>
