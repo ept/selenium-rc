@@ -3,7 +3,7 @@ package org.openqa.selenium.server;
 public enum SpecialCommand {
 	getNewBrowserSession,
 	testComplete,
-	shutDown,
+	shutDownSeleniumServer,
 	getLogMessages,
 	retrieveLastRemoteControlLogs,
 	captureEntirePageScreenshotToString,
@@ -11,6 +11,7 @@ public enum SpecialCommand {
 	captureScreenshot,
 	captureScreenshotToString,
 	captureNetworkTraffic,
+	addCustomRequestHeader,
 	keyDownNative,
 	keyUpNative,
 	keyPressNative,

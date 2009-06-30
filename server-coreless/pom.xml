@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.seleniumhq.selenium</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.2-SNAPSHOT</version>
         <artifactId>selenium-rc</artifactId>
     </parent>
     <groupId>org.seleniumhq.selenium.server</groupId>
@@ -84,7 +84,7 @@
                   <configuration>
                     <tasks>
                       <echo>Shutting down any existing Remote Control...</echo>
-                      <get src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="shutdown.log" ignoreerrors="true"/>
+                      <get src="http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer" dest="shutdown.log" ignoreerrors="true"/>
                     </tasks>
                   </configuration>
                   <goals>

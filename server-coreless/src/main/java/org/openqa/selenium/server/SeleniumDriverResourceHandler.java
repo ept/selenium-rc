@@ -21,7 +21,6 @@ package org.openqa.selenium.server;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Get;
-import org.apache.tools.ant.util.FileUtils;
 import org.mortbay.http.HttpConnection;
 import org.mortbay.http.HttpException;
 import org.mortbay.http.HttpFields;
@@ -34,6 +33,7 @@ import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
 import org.openqa.selenium.server.commands.*;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
@@ -394,9 +394,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 setDomain(sessionId, values.get(1));
                 results = "OK," + sessionId;
             } catch (RemoteCommandException rce) {
-                results = "Failed to start new browser session: " + rce.getMessage();
-            }
-
+                  results = "Failed to start new browser session: " + rce.getMessage();
+            } catch (InvalidBrowserExecutableException ibex) {
+                  results = "Failed to start new browser session: " + ibex.getMessage();
+            } catch (IllegalArgumentException iaex) {
+                  results = "Failed to start new browser session: " + iaex.getMessage();
+            } catch (RuntimeException rte) {
+                  results = "Failed to start new browser session: " + rte.getMessage();
+            } 
             // clear out any network traffic captured but never pulled back by the last client (this feature only works with one concurrent browser, similar to PI mode)
             CaptureNetworkTrafficCommand.clear();
 
@@ -405,8 +410,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         	browserSessionFactory.endBrowserSession(sessionId, remoteControl.getConfiguration());
             results = "OK";
             break;
-        case shutDown:
-            results = null;
+        case shutDownSeleniumServer:
+            results = "OK";
             shutDown(res);
         	break;
         case getLogMessages:
@@ -427,6 +432,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         	break;
         case captureNetworkTraffic:
         	results = new CaptureNetworkTrafficCommand(values.get(0)).execute();
+        	break;
+        case addCustomRequestHeader:
+        	results = new AddCustomRequestHeaderCommand(values.get(0), values.get(1)).execute();
         	break;
         case keyDownNative:
         	try {
@@ -591,6 +599,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
     
     protected void downloadWithAnt(final URL url, final File outputFile) {
+
         Project p = new Project();
         p.addBuildListener(new AntJettyLoggerBuildListener(LOGGER));
         Get g = new Get();
@@ -599,11 +608,24 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         g.setDest(outputFile);
         g.execute();
     }
+   
+    private void createParentDirsAndSetDeleteOnExit(String parent, File tmpFile) {
+      File parentFile = tmpFile.getParentFile();
+      if (!parentFile.getPath().equals(parent) && !parentFile.exists()) {
+        createParentDirsAndSetDeleteOnExit(parent, parentFile);
+      }
+      parentFile.mkdir();
+      parentFile.deleteOnExit();
+    }
     
     protected File createTempFile(String name) {
-    	String parent = System.getProperty("java.io.tmpdir");
-    	return new File(parent, name);
+      String parent = System.getProperty("java.io.tmpdir");
+      File tmpFile = new File(parent, name);
+      createParentDirsAndSetDeleteOnExit(parent, tmpFile);
+      tmpFile.deleteOnExit();
+      return tmpFile;
     }
+ 
     
     private File downloadFile(String urlString) {
         URL url;
@@ -616,7 +638,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         String fileName = url.getFile();
 
         File outputFile = createTempFile(fileName);
-        outputFile.deleteOnExit(); // to be on the safe side.
         
         downloadWithAnt(url, outputFile);
         

@@ -1,0 +1,9 @@
+selenium.ipr
+selenium.iws
+dist
+classes
+selenium.xml
+.project
+.classpath
+*.log
+*.log.lck

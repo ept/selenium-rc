@@ -23,10 +23,12 @@ public class LauncherUtilsUnitTest extends TestCase {
 
     // create file with name fileName under <temp-dir>/<parentDirName> and write <data> into the created file.
     private File createFileWithData(String parentDirName, String fileName, String data) throws IOException {
-        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        File tempDir = File.createTempFile("LauncherUtilsUnitTest", "dir");
+        tempDir.delete();
 
         File parentDir = new File(tempDir, parentDirName);
         parentDir.deleteOnExit();
+        System.out.println("Making dirs for path " + parentDir.getPath() + " (assuming path has not already been created)");
         assertTrue(parentDir.mkdirs());
         File file = new File(parentDir, fileName);
         file.deleteOnExit();
