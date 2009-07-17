@@ -286,7 +286,7 @@ public class SeleniumServer {
         server.addContext(createDriverContextWithSeleniumDriverResourceHandler(context));
     }
 
-    private HttpContext createDriverContextWithSeleniumDriverResourceHandler(HttpContext context) {
+    protected HttpContext createDriverContextWithSeleniumDriverResourceHandler(HttpContext context) {
         // Associate the SeleniumDriverResourceHandler with the /selenium-server/driver context
         HttpContext driverContext = new HttpContext();
         driverContext.setContextPath("/selenium-server/driver");
