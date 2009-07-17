@@ -195,7 +195,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     private void logPostedData(FrameAddress frameAddress, boolean justLoaded, String sessionId, String postedData, String uniqueId) {
         StringBuffer sb = new StringBuffer();
-        sb.append("Browser " + sessionId + "/" + frameAddress + " " + uniqueId + " posted " + postedData);
+        sb.append("Browser " + sessionId + "/" + frameAddress + " " + uniqueId + " posted " + (postedData.length() > 512 ? postedData.substring(0,512) + "..." : postedData));
         if (!frameAddress.isDefault()) {
             sb.append(" from " + frameAddress);
         }
@@ -353,7 +353,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return (s!=null) && s.matches("java.io.IOException: CreateProcess: .*error=3");
     }
 
-    private void handleCommandRequest(HttpRequest req, HttpResponse res, String cmd, String sessionId) {
+    protected void handleCommandRequest(HttpRequest req, HttpResponse res, String cmd, String sessionId) {
         final String results;
         // If this a Driver Client sending a new command...
         res.setContentType("text/plain");
@@ -583,7 +583,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
     
 
-    private Vector<String> parseSeleneseParameters(HttpRequest req) {
+    protected Vector<String> parseSeleneseParameters(HttpRequest req) {
         Vector<String> values = new Vector<String>();
 
         for (int i = 1; req.getParameter(Integer.toString(i)) != null; i++) {
