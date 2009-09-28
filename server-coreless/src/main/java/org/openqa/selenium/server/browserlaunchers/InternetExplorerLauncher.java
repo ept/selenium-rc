@@ -22,7 +22,7 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 public class InternetExplorerLauncher implements BrowserLauncher {
 
     final BrowserLauncher realLauncher;
-    static final String DEFAULT_MODE="iehta";
+    static final String DEFAULT_MODE="proxy";
     
     public InternetExplorerLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
 
@@ -30,7 +30,7 @@ public class InternetExplorerLauncher implements BrowserLauncher {
         if (mode == null) mode = DEFAULT_MODE;
         if ("default".equals(mode)) mode = DEFAULT_MODE;
         
-        if (DEFAULT_MODE.equals(mode)) {
+        if ("iehta".equals(mode)) {
             realLauncher = new HTABrowserLauncher(browserOptions, configuration, sessionId, browserLaunchLocation);
             return;
         }
